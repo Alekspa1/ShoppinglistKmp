@@ -56,15 +56,12 @@ fun ShopingList(listShop: List<ShopingList>) {
             contentPadding = PaddingValues(8.dp)
 
         ) {
-            items(items = listShop, key = { it.id }) { shop ->
 
-                // 1. Заголовок (название списка покупок)
-                Text(text = shop.name, color = Color.Black)
 
-                // 2. Вложенные элементы (товары внутри этого списка)
-                shop.items.forEach { shopItem ->
-                    ItemWeather(shopItem)
-                }
+
+
+            items(items = listShop, key = {item -> item.id}) { shop ->
+                ItemWeather(shop)
             }
         }
 
@@ -76,7 +73,7 @@ fun ShopingList(listShop: List<ShopingList>) {
 
 
 @Composable
-fun ItemWeather(item: ShopItems) {
+fun ItemWeather(item: ShopingList) {
 
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -120,7 +117,7 @@ fun ItemWeather(item: ShopItems) {
                     textAlign = TextAlign.End,
 
                     style = MaterialTheme.typography.titleSmall,
-                    color = Color.White
+                    color = Color.Black
 
                 )
 
@@ -134,7 +131,7 @@ fun ItemWeather(item: ShopItems) {
 
                     Text(
                         item.name, style = MaterialTheme.typography.titleSmall,
-                        color = Color.White
+                        color = Color.Blue
                     )
 
 
@@ -147,7 +144,7 @@ fun ItemWeather(item: ShopItems) {
                         text = item.name,
 
                         style = MaterialTheme.typography.titleSmall,
-                        color = Color.White
+                        color = Color.Red
 
                     )
 
@@ -193,38 +190,16 @@ fun ItemWeather(item: ShopItems) {
 
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    item.items.forEach { shopItems ->
+                        Text(
 
-                    Text(
-
-                        text = item.name,
-                        color = Color.White
-
-
-                    )
-
-                    Text(
-
-                        text = item.name,
-                        color = Color.White
+                            text = shopItems.name,
+                            color = Color.White
 
 
-                    )
+                        )
+                    }
 
-                    Text(
-
-                        text = item.name,
-                        color = Color.White
-
-
-                    )
-
-                    Text(
-
-                        text = item.name,
-                        color = Color.White
-
-
-                    )
 
 
                 }
