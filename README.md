@@ -1,35 +1,40 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# Shopping List KMP 🛒
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+Тестовое задание на **Kotlin Multiplatform (KMP)**. Приложение для синхронизированного списка покупок, работающее на Android и iOS (Compose Multiplatform).
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## 🚀 Функционал и логика
 
-### Build and Run Android Application
+### 🔑 Авторизация и доступ
+* **Регистрация:** При первом запуске приложение автоматически регистрирует устройство и получает уникальный ключ. В последующих сессиях ключ берется из локального хранилища.
+* **Синхронизация устройств:** Чтобы «подключиться» к списку другого человека, необходимо нажать на **иконку шестеренки** и ввести его ключ. После этого данные на устройствах будут синхронизированы.
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+### 🔄 Синхронизация данных (Real-time)
+Так как предоставленное API не поддерживает WebSockets, для обеспечения «живого» обновления списка использован механизм **Polling (опрос сервера)**:
+* **Список всех списков:** Обновляется каждые **10 секунд**.
+* **Активный список товаров:** Обновляется каждые **5 секунд**.
+* **Реактивность:** Использование `flatMapLatest` и `combine` во ViewModel позволяет мгновенно прерывать паузу таймера и делать запрос к серверу сразу после добавления товара (мгновенный фидбек).
 
-### Build and Run iOS Application
-
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+### 🛠 Стек технологий
+* **UI:** Compose Multiplatform (общий код для Android и iOS).
+* **DI:** `Koin` (управление зависимостями в commonMain).
+* **Network:** `Ktor` (с настроенной JSON-сериализацией и логированием).
+* **Architecture:** Clean Architecture (UseCase, Repository).
+* **Async:** Kotlin Coroutines & Flow.
+* **Storage:** `Multiplatform Settings`.
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## 🏗 Архитектурный ход мысли
+* **Эффективность обновлений:** Потоки данных настроены так, что сетевая активность прекращается, если пользователь сворачивает приложение или уходит с экрана (используется `SharingStarted.WhileSubscribed`).
+* **Offline-first:** В данном проекте я не стал внедрять `Room`, так как специфика API и требования к синхронизации делают упор на сетевой статус. Однако архитектура полностью готова к внедрению локальной БД в слой Repository.
+* **UI/UX:** Согласно ТЗ, упор сделан на логику. Интерфейс минималистичен, приложение пока не поддерживает обязательное зачеркивание товаров но есть анимации развертывания списков.
+
+## 📱 Запуск проекта
+Проект настроен для сборки под обе платформы:
+* **Android:** Откройте в Android Studio и запустите модуль `composeApp`.
+* **iOS:** Для сборки требуется macOS и Xcode. Запуск через `.xcworkspace` или напрямую из Android Studio. Но так как у меня мака нет, я не могу полноценно собрать приложение на IOS
+
+---
+
+### 📝 Заметка для проверяющего
+Проект постепенно дорабатывается. Основная цель — показать владение реактивными потоками (Flow) и умение строить надежную Multiplatform архитектуру в условиях нестандартного API.
