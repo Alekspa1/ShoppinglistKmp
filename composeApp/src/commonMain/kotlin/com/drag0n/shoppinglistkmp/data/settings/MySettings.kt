@@ -1,5 +1,6 @@
 package com.drag0n.shoppinglistkmp.data.settings
 
+import com.drag0n.shoppinglistkmp.Const.KEY
 import com.russhwolf.settings.Settings
 
 class MySettings(private val settings: Settings) {
@@ -11,8 +12,6 @@ class MySettings(private val settings: Settings) {
     fun getKey(): String {
         return settings.getString(KEY, "")
     }
-companion object{
-    const val KEY = "auth_key"
-}
+
 }
 

@@ -20,7 +20,7 @@ koinCompose = "4.0.0"
 koinCore = "4.1.1"
 kotlinxSerializationJson = "1.10.0"
 multiplatformSettingsNoArg = "1.3.0"
-
+materialIconsExtended = "1.7.3"
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -56,6 +56,7 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", ver
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 multiplatform-settings-no-arg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettingsNoArg" }
 
+material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 
 
 [plugins]

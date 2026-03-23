@@ -1,14 +1,18 @@
 package com.drag0n.shoppinglistkmp.data
 
 import com.drag0n.shoppinglistkmp.MyViewModel
+import com.drag0n.shoppinglistkmp.data.network.ShopsitemsRepositoryImpl
 import com.drag0n.shoppinglistkmp.data.network.KeyRepositoryImpl
 import com.drag0n.shoppinglistkmp.data.settings.MySettings
+import com.drag0n.shoppinglistkmp.domain.repository.ShopsitemsRepository
 import com.drag0n.shoppinglistkmp.domain.repository.KeyRepository
+import com.drag0n.shoppinglistkmp.domain.useCases.AddItemShopListUseCase
+import com.drag0n.shoppinglistkmp.domain.useCases.CreateShopListUseCase
+import com.drag0n.shoppinglistkmp.domain.useCases.GetAllShopsListUseCase
+import com.drag0n.shoppinglistkmp.domain.useCases.GetItemsListUseCase
 import com.drag0n.shoppinglistkmp.domain.useCases.GetKeyUseCase
 import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
-import io.ktor.client.network.sockets.SocketTimeoutException
-import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
@@ -47,9 +51,15 @@ val appModule = module {
     single<Settings> { Settings() }
     single<MySettings> { MySettings(get()) }
     single<KeyRepository> { KeyRepositoryImpl(get()) }
+    single<ShopsitemsRepository> { ShopsitemsRepositoryImpl(get()) }
+
     viewModelOf(::MyViewModel)
 
     factory<GetKeyUseCase> { GetKeyUseCase(get(),get()) }
+    factory<CreateShopListUseCase> { CreateShopListUseCase(get()) }
+    factory<GetAllShopsListUseCase> { GetAllShopsListUseCase(get()) }
+    factory<GetItemsListUseCase> { GetItemsListUseCase(get()) }
+    factory<AddItemShopListUseCase> { AddItemShopListUseCase(get()) }
 
 }
 

@@ -18,8 +18,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,13 +38,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.drag0n.shoppinglistkmp.domain.ShopItems
-import com.drag0n.shoppinglistkmp.domain.ShopingList
-import kotlin.time.Duration.Companion.days
+import com.drag0n.shoppinglistkmp.Const.SETTINGS
+import com.drag0n.shoppinglistkmp.domain.model.Shop
+import com.drag0n.shoppinglistkmp.domain.model.items.Item
 
 
 @Composable
-fun ShopingList(listShop: List<ShopingList>) {
+fun ShopingList(listShop: List<Shop>,
+                openId: Int?,
+                onExpandClick: (Int?) -> Unit,
+                itemList : List<Item>,
+                onShowDialogChange: (Boolean) -> Unit,) {
 
     Box(
         modifier = Modifier
@@ -57,25 +66,29 @@ fun ShopingList(listShop: List<ShopingList>) {
 
         ) {
 
+            items(items = listShop, key = { item -> item.id }) { shop ->
+                Item(
+                    item = shop,
+                    isExpanded = shop.id == openId,
+                    onExpandClick = { onExpandClick(shop.id) },
+                    onShowDialogChange = onShowDialogChange,
+                    itemsList = itemList
 
-
-
-            items(items = listShop, key = {item -> item.id}) { shop ->
-                ItemWeather(shop)
+                )
             }
         }
 
 
-        }
     }
-
-
+}
 
 
 @Composable
-fun ItemWeather(item: ShopingList) {
-
-    var isExpanded by remember { mutableStateOf(false) }
+fun Item(item: Shop,
+         onShowDialogChange: (Boolean) -> Unit,
+         isExpanded: Boolean,
+         onExpandClick: () -> Unit,
+         itemsList: List<Item>) {
 
     Column(
 
@@ -95,7 +108,7 @@ fun ItemWeather(item: ShopingList) {
 
                 .clip(RoundedCornerShape(16.dp))
 
-                .clickable { isExpanded = !isExpanded },
+                .clickable { onExpandClick() },
 
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
@@ -137,10 +150,7 @@ fun ItemWeather(item: ShopingList) {
 
                     Spacer(modifier = Modifier.weight(1f))
 
-
-
                     Text(
-
                         text = item.name,
 
                         style = MaterialTheme.typography.titleSmall,
@@ -184,24 +194,25 @@ fun ItemWeather(item: ShopingList) {
                 elevation = CardDefaults.cardElevation(0.dp)
 
             ) {
-
                 Column(
                     modifier = Modifier.padding(16.dp),
-
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    item.items.forEach { shopItems ->
+                    itemsList.forEach {
                         Text(
-
-                            text = shopItems.name,
+                            text = it.name,
                             color = Color.White
-
-
                         )
                     }
 
-
-
+                    IconButton(
+                        onClick = {onShowDialogChange(true)})
+                    {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Добавить элемент"
+                        )
+                    }
                 }
 
 

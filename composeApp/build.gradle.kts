@@ -36,6 +36,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
+            implementation(libs.material.icons.extended)
 
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.kotlinx.coroutines.core)
