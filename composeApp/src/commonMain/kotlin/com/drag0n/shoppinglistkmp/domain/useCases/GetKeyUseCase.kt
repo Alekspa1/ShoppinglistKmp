@@ -13,9 +13,11 @@ class GetKeyUseCase(private val repository : KeyRepository, private val settings
             repository.createKey().map { response ->
                 val newKey = response.key
                 settings.saveKey(newKey)
+                println("Ключа нет, вот он: $newKey")
                 newKey
             }
         } else {
+            println("Ключ уже есть, вот он: $currentKey")
             Result.success(currentKey)
         }
     }

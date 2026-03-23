@@ -5,9 +5,10 @@ import androidx.compose.runtime.Composable
 import com.drag0n.shoppinglistkmp.domain.ShopItems
 import com.drag0n.shoppinglistkmp.domain.ShopingList
 import com.drag0n.shoppinglistkmp.presentaton.ShopingList
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun App(){
+fun App(viewModel: MyViewModel = koinViewModel()){
     val listShop = mutableListOf<ShopingList>()
     for(i in 0..5){
         val listItems = mutableListOf<ShopItems>()

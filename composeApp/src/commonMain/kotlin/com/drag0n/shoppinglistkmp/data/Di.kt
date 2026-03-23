@@ -2,6 +2,7 @@ package com.drag0n.shoppinglistkmp.data
 
 import com.drag0n.shoppinglistkmp.MyViewModel
 import com.drag0n.shoppinglistkmp.data.network.KeyRepositoryImpl
+import com.drag0n.shoppinglistkmp.data.settings.MySettings
 import com.drag0n.shoppinglistkmp.domain.repository.KeyRepository
 import com.drag0n.shoppinglistkmp.domain.useCases.GetKeyUseCase
 import com.russhwolf.settings.Settings
@@ -44,6 +45,7 @@ val appModule = module {
         }
     }
     single<Settings> { Settings() }
+    single<MySettings> { MySettings(get()) }
     single<KeyRepository> { KeyRepositoryImpl(get()) }
     viewModelOf(::MyViewModel)
 
