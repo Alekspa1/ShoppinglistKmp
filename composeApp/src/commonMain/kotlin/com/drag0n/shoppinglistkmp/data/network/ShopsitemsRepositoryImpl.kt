@@ -1,5 +1,9 @@
 package com.drag0n.shoppinglistkmp.data.network
 
+import com.drag0n.shoppinglistkmp.Const.CROSS_IT
+import com.drag0n.shoppinglistkmp.Const.ITEM
+import com.drag0n.shoppinglistkmp.Const.LIST
+import com.drag0n.shoppinglistkmp.Const.UPDATES
 import com.drag0n.shoppinglistkmp.domain.model.CreateList
 import com.drag0n.shoppinglistkmp.domain.model.ShopList
 import com.drag0n.shoppinglistkmp.domain.model.items.Items
@@ -42,5 +46,43 @@ class ShopsitemsRepositoryImpl(private val ktor: HttpClient) : ShopsitemsReposit
         ktor.get("https://cyber-unisafe.ru/shopping/v4/GetShoppingList"){
             parameter("list_id", id)
         }.body()
+    }
+
+    override suspend fun delete(id: Int, who: String) {
+        when(who){
+                ITEM -> {
+                    ktor.post("https://cyber-unisafe.ru/shopping/v4/RemoveFromList") {
+                        parameter("item_id", id)
+                    }
+                }
+                LIST ->{
+                    ktor.post("https://cyber-unisafe.ru/shopping/v4/RemoveShoppingList") {
+                        parameter("list_id", id)
+                    }
+                }
+        }
+
+    }
+
+    override suspend fun update(
+        id: Int,
+        value: String,
+        n: String,
+        who: String
+    ) {
+        when(who){
+            UPDATES -> {
+                ktor.post("https://cyber-unisafe.ru/shopping/v4/UpdateShoppingList") {
+                    parameter("id", id)
+                    parameter("value", value)
+                    parameter("n", n)
+                }
+            }
+            CROSS_IT -> {
+                ktor.post("https://cyber-unisafe.ru/shopping/v4/CrossItOff") {
+                    parameter("id", id)
+                }
+            }
+        }
     }
 }

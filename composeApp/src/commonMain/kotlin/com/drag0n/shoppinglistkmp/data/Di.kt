@@ -8,9 +8,11 @@ import com.drag0n.shoppinglistkmp.domain.repository.ShopsitemsRepository
 import com.drag0n.shoppinglistkmp.domain.repository.KeyRepository
 import com.drag0n.shoppinglistkmp.domain.useCases.AddItemShopListUseCase
 import com.drag0n.shoppinglistkmp.domain.useCases.CreateShopListUseCase
+import com.drag0n.shoppinglistkmp.domain.useCases.DeleteUseCase
 import com.drag0n.shoppinglistkmp.domain.useCases.GetAllShopsListUseCase
 import com.drag0n.shoppinglistkmp.domain.useCases.GetItemsListUseCase
 import com.drag0n.shoppinglistkmp.domain.useCases.GetKeyUseCase
+import com.drag0n.shoppinglistkmp.domain.useCases.UpdateItemUseCase
 import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -60,6 +62,8 @@ val appModule = module {
     factory<GetAllShopsListUseCase> { GetAllShopsListUseCase(get()) }
     factory<GetItemsListUseCase> { GetItemsListUseCase(get()) }
     factory<AddItemShopListUseCase> { AddItemShopListUseCase(get()) }
+    factory<DeleteUseCase> { DeleteUseCase(get()) }
+    factory<UpdateItemUseCase> { UpdateItemUseCase(get()) }
 
 }
 

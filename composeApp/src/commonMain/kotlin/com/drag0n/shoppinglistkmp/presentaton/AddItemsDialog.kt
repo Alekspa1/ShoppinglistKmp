@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.drag0n.shoppinglistkmp.Const.ITEM
 import com.drag0n.shoppinglistkmp.Const.LIST
 import com.drag0n.shoppinglistkmp.Const.SETTINGS
+import com.drag0n.shoppinglistkmp.Const.UPDATES
 
 
 @Composable
@@ -38,6 +39,7 @@ fun AddItemsDialog(
             LIST -> "Создать новый список покупок"
             ITEM -> "Добавить элемент в корзину"
             SETTINGS -> "Ваш ключ: $key"
+            UPDATES -> "Изменить информацию"
             else -> ""
     }
     var text by remember { mutableStateOf("") }
@@ -59,7 +61,7 @@ fun AddItemsDialog(
                         .padding(top = 8.dp)
                         .focusRequester(focusRequester)
                 )
-                if (who == ITEM){
+                if (who == ITEM || who == UPDATES){
                     OutlinedTextField(
                         value = count,
                         onValueChange = { newValue ->

@@ -6,4 +6,6 @@ object Const {
     const val ITEM = "ITEM"
     const val KEY = "auth_key"
     const val SETTINGS = "SETTINGS"
+    const val UPDATES = "UPDATES"
+    const val CROSS_IT = "CROSS_IT"
 }

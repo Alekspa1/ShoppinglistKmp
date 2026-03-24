@@ -10,5 +10,7 @@ interface ShopsitemsRepository {
     suspend fun addItemShopList(id: Int,value: String, count: Int)
     suspend fun getAllShopsList(key: String) : Result<ShopList>
     suspend fun getItemsList(id:Int) : Result<Items>
+    suspend fun delete(id: Int,who: String)
+    suspend fun update(id: Int = 0,value:String = "",n:String = "",who: String = "")
 
 }

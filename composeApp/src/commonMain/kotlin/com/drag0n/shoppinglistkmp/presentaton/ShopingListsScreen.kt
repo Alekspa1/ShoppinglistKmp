@@ -20,7 +20,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckBox
+import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -36,19 +39,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.drag0n.shoppinglistkmp.Const.SETTINGS
+import com.drag0n.shoppinglistkmp.Const.ITEM
+import com.drag0n.shoppinglistkmp.Const.LIST
+import com.drag0n.shoppinglistkmp.Const.UPDATES
+import com.drag0n.shoppinglistkmp.Const.CROSS_IT
 import com.drag0n.shoppinglistkmp.domain.model.Shop
 import com.drag0n.shoppinglistkmp.domain.model.items.Item
 
 
 @Composable
-fun ShopingList(listShop: List<Shop>,
-                openId: Int?,
-                onExpandClick: (Int?) -> Unit,
-                itemList : List<Item>,
-                onShowDialogChange: (Boolean) -> Unit,) {
+fun ShopingList(
+    listShop: List<Shop>,
+    openId: Int?,
+    onExpandClick: (Int?) -> Unit,
+    itemList: List<Item>,
+    onShowDialogChange: (Int, Boolean, String) -> Unit,
+    onDeleteButtonOrChangeItem: (Int, String) -> Unit
+) {
 
     Box(
         modifier = Modifier
@@ -72,7 +82,8 @@ fun ShopingList(listShop: List<Shop>,
                     isExpanded = shop.id == openId,
                     onExpandClick = { onExpandClick(shop.id) },
                     onShowDialogChange = onShowDialogChange,
-                    itemsList = itemList
+                    itemsList = itemList,
+                    onDeleteButtonOrChangeItem = onDeleteButtonOrChangeItem
 
                 )
             }
@@ -84,11 +95,15 @@ fun ShopingList(listShop: List<Shop>,
 
 
 @Composable
-fun Item(item: Shop,
-         onShowDialogChange: (Boolean) -> Unit,
-         isExpanded: Boolean,
-         onExpandClick: () -> Unit,
-         itemsList: List<Item>) {
+fun Item(
+    item: Shop,
+    onShowDialogChange: (Int, Boolean, String) -> Unit,
+    isExpanded: Boolean,
+    onExpandClick: () -> Unit,
+    itemsList: List<Item>,
+    onDeleteButtonOrChangeItem: (Int, String) -> Unit
+) {
+
 
     Column(
 
@@ -118,49 +133,33 @@ fun Item(item: Shop,
             elevation = CardDefaults.cardElevation(0.dp)
 
         ) {
+            Row(
 
-            Column(modifier = Modifier.padding(12.dp)) {
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+
+                verticalAlignment = Alignment.CenterVertically
+
+            ) {
 
                 Text(
-
-                    text = item.name,
-
-                    modifier = Modifier.fillMaxWidth(),
-
-                    textAlign = TextAlign.End,
-
-                    style = MaterialTheme.typography.titleSmall,
-                    color = Color.Black
-
+                    item.name, style = MaterialTheme.typography.titleSmall,
+                    color = Color.Blue
                 )
 
-                Row(
 
-                    modifier = Modifier.fillMaxWidth(),
+                Spacer(modifier = Modifier.weight(1f))
 
-                    verticalAlignment = Alignment.CenterVertically
-
-                ) {
-
-                    Text(
-                        item.name, style = MaterialTheme.typography.titleSmall,
-                        color = Color.Blue
+                IconButton(onClick = { onDeleteButtonOrChangeItem(item.id, LIST) }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Удалить элемент"
                     )
-
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Text(
-                        text = item.name,
-
-                        style = MaterialTheme.typography.titleSmall,
-                        color = Color.Red
-
-                    )
-
                 }
 
             }
+
 
         }
 
@@ -195,22 +194,68 @@ fun Item(item: Shop,
 
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     itemsList.forEach {
-                        Text(
-                            text = it.name,
-                            color = Color.White
-                        )
+
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = it.name,
+                                style = TextStyle(
+                                    textDecoration = if (it.isCrossed) TextDecoration.LineThrough else TextDecoration.None,
+
+                                    color = if (it.isCrossed) Color.Gray else Color.Red
+                                ),
+                                modifier = Modifier.clickable {
+                                    onShowDialogChange(
+                                        it.id,
+                                        true,
+                                        UPDATES
+                                    )
+                                }
+                            )
+                            Text(
+                                modifier = Modifier.padding(start = 8.dp),
+                                text = it.n.toString(),
+                                style = TextStyle(
+                                    textDecoration = if (it.isCrossed) TextDecoration.LineThrough else TextDecoration.None,
+
+                                    color = if (it.isCrossed) Color.Gray else Color.Red
+                                )
+                            )
+
+                            Spacer(modifier = Modifier.weight(1f))
+                            IconButton(onClick = { onDeleteButtonOrChangeItem(it.id, CROSS_IT) }) {
+                                Icon(
+                                    imageVector = if (it.isCrossed) Icons.Default.CheckBox else Icons.Default.CheckBoxOutlineBlank,
+                                    contentDescription = null,
+                                    tint = if (it.isCrossed) Color.Blue else Color.White
+                                )
+                            }
+                            IconButton(onClick = { onDeleteButtonOrChangeItem(it.id, ITEM) }) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Удалить элемент"
+                                )
+                            }
+
+                        }
+
                     }
 
                     IconButton(
-                        onClick = {onShowDialogChange(true)})
+                        modifier = Modifier.align(Alignment.End),
+                        onClick = { onShowDialogChange(0, true, ITEM) })
                     {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Добавить элемент"
+                            contentDescription = "Добавить элемент",
                         )
                     }
                 }
