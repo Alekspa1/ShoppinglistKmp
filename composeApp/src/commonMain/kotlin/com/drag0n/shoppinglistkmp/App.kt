@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -12,9 +13,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,14 +39,25 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun App(viewModel: MyViewModel = koinViewModel()) {
 
+    val snackbarHostState = remember { SnackbarHostState() }
     var showDialog by remember { mutableStateOf(false) }
     var who by remember { mutableStateOf("") }
     var id: Int by remember { mutableStateOf(0) }
     val openId by viewModel.expandedId.collectAsStateWithLifecycle()
     val shopList by viewModel.shopListFlow.collectAsStateWithLifecycle()
     val itemList by viewModel.itemsListFlow.collectAsStateWithLifecycle()
+    val errorFlow = viewModel.errorFlow
+
+    LaunchedEffect(errorFlow) {
+        errorFlow.collect { message ->
+            snackbarHostState.showSnackbar(message)
+        }
+    }
+
+
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -62,6 +77,14 @@ fun App(viewModel: MyViewModel = koinViewModel()) {
             TopAppBar(
                 title = { Text("Список покупок") },
                 actions = {
+                    IconButton(onClick = {
+                        viewModel.initKey(viewModel.keyFlow.value)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Настройки"
+                        )
+                    }
                     IconButton(onClick = {
                         who = SETTINGS
                         showDialog = true

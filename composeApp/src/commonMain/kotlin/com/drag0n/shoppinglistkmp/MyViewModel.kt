@@ -36,7 +36,8 @@ class MyViewModel(
 ) : ViewModel() {
 
 
-    private val keyFlow = MutableStateFlow(settings.getKey())
+    val keyFlow = MutableStateFlow(settings.getKey())
+    val errorFlow = MutableSharedFlow<String>()
 
     private val _expandedId = MutableStateFlow<Int?>(null)
     val expandedId = _expandedId.asStateFlow()
@@ -46,10 +47,10 @@ class MyViewModel(
         viewModelScope.launch {
             key().onSuccess { key ->
                 initKey(key)
-                println("Key: $key")
             }
                 .onFailure { error ->
-                    println(error.message.toString())
+                    errorFlow.emit("Произошла ошибка получения ключа")
+
                 }
         }
     }
@@ -63,7 +64,7 @@ class MyViewModel(
 
                 }
                 .onFailure { error ->
-
+                    errorFlow.emit("Произошла ошибка создания списка")
                 }
         }
     }
@@ -78,7 +79,9 @@ class MyViewModel(
                 getAllShopList(key).onSuccess {
                     emit(it.shopList)
                 }.onFailure { error ->
-                    println("Произошла ошибка ${error.message.toString()}")
+                    errorFlow.emit("Произошла ошибка, возможно вы ошиблись с ключем списка или неполадки с сетью")
+                    emit(emptyList())
+                    return@flow
                 }
                 delay(10000)
             }
@@ -100,7 +103,7 @@ class MyViewModel(
                 getItemsList(id).onSuccess {
                     emit(it.itemList)
                 }.onFailure { error ->
-                    println("Произошла ошибка ${error.message.toString()}")
+                    errorFlow.emit("Произошла ошибка получения элементов списка")
                 }
                 delay(5000)
             }
