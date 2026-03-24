@@ -56,9 +56,9 @@ class MyViewModel(
 
     fun createShopList(name: String) {
         viewModelScope.launch {
-            createList(settings.getKey(), name)
+            createList(keyFlow.value, name)
                 .onSuccess { success ->
-                    if (success.success) initKey(settings.getKey())
+                    if (success.success) initKey(keyFlow.value)
 
                 }
                 .onFailure { error ->
