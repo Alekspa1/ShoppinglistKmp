@@ -1,10 +1,8 @@
 package com.drag0n.shoppinglistkmp
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drag0n.shoppinglistkmp.data.settings.MySettings
-import com.drag0n.shoppinglistkmp.domain.model.Shop
 import com.drag0n.shoppinglistkmp.domain.useCases.AddItemShopListUseCase
 import com.drag0n.shoppinglistkmp.domain.useCases.CreateShopListUseCase
 import com.drag0n.shoppinglistkmp.domain.useCases.DeleteUseCase
